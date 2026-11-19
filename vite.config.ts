@@ -5,8 +5,9 @@ import path from 'path';
 import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
-  base: '/CampusTrace/',
+  
   return {
+    base: '/CampusTrace/',
     plugins: [
       react(),
       tailwindcss(),
