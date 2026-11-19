@@ -1,0 +1,489 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Campus user account profile for Students, Faculty, and Administrators.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Firebase Auth UID matching the document ID."
+        },
+        "fullName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100,
+          "description": "Full display name of the campus member."
+        },
+        "email": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 150,
+          "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+          "description": "Verified campus email address."
+        },
+        "role": {
+          "type": "string",
+          "enum": ["student", "faculty", "admin"],
+          "description": "Role-based access tier."
+        },
+        "department": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100,
+          "description": "Academic department or administrative office."
+        },
+        "campusId": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 40,
+          "description": "University student or staff ID number."
+        },
+        "phone": {
+          "type": "string",
+          "maxLength": 30,
+          "description": "Optional campus contact phone number."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "suspended"],
+          "description": "Account access status."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of registration."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last profile update."
+        }
+      },
+      "required": ["uid", "fullName", "email", "role", "department", "campusId", "status", "createdAt", "updatedAt"]
+    },
+    "AdminMarker": {
+      "title": "AdminMarker",
+      "description": "Trusted admin lookup marker indexed by Firebase Auth UID.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Admin Firebase Auth UID."
+        },
+        "email": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 150,
+          "description": "Admin verified email."
+        },
+        "grantedBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "description": "UID of granting administrator or system bootstrap."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when admin privileges were granted."
+        }
+      },
+      "required": ["uid", "email", "grantedBy", "createdAt"]
+    },
+    "Item": {
+      "title": "Item",
+      "description": "Lost or Found item report published on the campus board.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Unique item document identifier."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120,
+          "description": "Short descriptive item name."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["lost", "found"],
+          "description": "Report direction: lost or found."
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "Electronics",
+            "ID Cards & Keys",
+            "Bags & Backpacks",
+            "Books & Notes",
+            "Clothing & Accessories",
+            "Sports & Gear",
+            "Other"
+          ],
+          "description": "Standardized campus item category."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 2000,
+          "description": "Detailed physical description and context."
+        },
+        "location": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 150,
+          "description": "Campus building or area where item was lost or found."
+        },
+        "dateReported": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 10,
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "description": "Incident date in YYYY-MM-DD format."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Lost", "Found", "Claimed", "Returned"],
+          "description": "Current lifecycle status of the item."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": ["campus"],
+          "description": "Board visibility scope."
+        },
+        "imageUrl": {
+          "type": "string",
+          "maxLength": 300000,
+          "description": "Firebase Storage HTTPS URL or compressed image data URI."
+        },
+        "contactSummary": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 160,
+          "description": "Non-PII drop-off desk or campus contact guidance."
+        },
+        "reporterId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "UID of the reporting user."
+        },
+        "reporterName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100,
+          "description": "Display name of the reporter."
+        },
+        "reporterRole": {
+          "type": "string",
+          "enum": ["student", "faculty", "admin"],
+          "description": "Campus role of the reporter."
+        },
+        "keywords": {
+          "type": "array",
+          "description": "Bounded search keywords (max 15)."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last modification."
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "type",
+        "category",
+        "description",
+        "location",
+        "dateReported",
+        "status",
+        "visibility",
+        "imageUrl",
+        "contactSummary",
+        "reporterId",
+        "reporterName",
+        "reporterRole",
+        "keywords",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ItemContact": {
+      "title": "ItemContact",
+      "description": "PII-isolated contact details for an item report, accessible only to verified campus users.",
+      "type": "object",
+      "properties": {
+        "itemId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Parent item document ID."
+        },
+        "reporterId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "UID of the item reporter."
+        },
+        "contactDetails": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "description": "Reporter direct email, phone, or office hours."
+        },
+        "pickupLocation": {
+          "type": "string",
+          "maxLength": 160,
+          "description": "Specific custody desk or room number."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        }
+      },
+      "required": ["itemId", "reporterId", "contactDetails", "pickupLocation", "updatedAt"]
+    },
+    "Claim": {
+      "title": "Claim",
+      "description": "Ownership claim submitted against a found item with verification history.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Unique claim document identifier."
+        },
+        "itemId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Target item document ID."
+        },
+        "itemTitle": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120,
+          "description": "Snapshot title of the claimed item."
+        },
+        "itemCategory": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 60,
+          "description": "Category of the claimed item."
+        },
+        "itemReporterId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "UID of the user who reported the found item."
+        },
+        "claimantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "UID of the user submitting the claim."
+        },
+        "claimantName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100,
+          "description": "Name of the claimant."
+        },
+        "claimantEmail": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 150,
+          "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+          "description": "Email of the claimant."
+        },
+        "claimantRole": {
+          "type": "string",
+          "enum": ["student", "faculty", "admin"],
+          "description": "Role of the claimant."
+        },
+        "ownershipProof": {
+          "type": "string",
+          "minLength": 15,
+          "maxLength": 1500,
+          "description": "Detailed explanation proving ownership."
+        },
+        "identifyingFeatures": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 1000,
+          "description": "Unique serial numbers, stickers, marks, or contents."
+        },
+        "supportingImageUrl": {
+          "type": "string",
+          "maxLength": 300000,
+          "description": "Optional receipt or proof photograph URL."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Pending", "Faculty Verified", "Approved", "Rejected"],
+          "description": "Verification workflow state."
+        },
+        "reviewerId": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "UID of reviewing faculty or admin."
+        },
+        "reviewerName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Name of reviewing faculty or admin."
+        },
+        "reviewNotes": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Audit notes from verification or decision."
+        },
+        "history": {
+          "type": "array",
+          "description": "Audit trail entries of claim transitions (max 20)."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of claim submission."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of latest claim action."
+        }
+      },
+      "required": [
+        "id",
+        "itemId",
+        "itemTitle",
+        "itemCategory",
+        "itemReporterId",
+        "claimantId",
+        "claimantName",
+        "claimantEmail",
+        "claimantRole",
+        "ownershipProof",
+        "identifyingFeatures",
+        "supportingImageUrl",
+        "status",
+        "reviewerId",
+        "reviewerName",
+        "reviewNotes",
+        "history",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "In-app notification delivered to a user on claim or item updates.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Unique notification identifier."
+        },
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Recipient user UID."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 140,
+          "description": "Notification headline."
+        },
+        "message": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 500,
+          "description": "Notification body text."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["claim_submitted", "claim_verified", "claim_approved", "claim_rejected", "item_updated", "system"],
+          "description": "Notification event type."
+        },
+        "relatedItemId": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Related item document ID if applicable."
+        },
+        "relatedClaimId": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Related claim document ID if applicable."
+        },
+        "read": {
+          "type": "boolean",
+          "description": "Read acknowledgment flag."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when notification was emitted."
+        }
+      },
+      "required": ["id", "userId", "title", "message", "type", "relatedItemId", "relatedClaimId", "read", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profile documents containing role, department, and PII restricted to owner and admin."
+    },
+    "/admins/{userId}": {
+      "schema": { "$ref": "#/entities/AdminMarker" },
+      "description": "Trusted administrator role lookup documents."
+    },
+    "/items/{itemId}": {
+      "schema": { "$ref": "#/entities/Item" },
+      "description": "Campus lost and found item reports."
+    },
+    "/items/{itemId}/private/{contactDocId}": {
+      "schema": { "$ref": "#/entities/ItemContact" },
+      "description": "PII-isolated direct contact info for item reports."
+    },
+    "/claims/{claimId}": {
+      "schema": { "$ref": "#/entities/Claim" },
+      "description": "Ownership claims and audit history for found items."
+    },
+    "/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/Notification" },
+      "description": "User-scoped notifications for claim and item lifecycle updates."
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "CampusTrace",
+  "description": "Web-Based Lost and Found Management System for Educational Campuses with item reporting, smart matching, claim verification, and role-based administration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
